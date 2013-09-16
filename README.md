@@ -1,4 +1,4 @@
-= Array-Formatters Gem
+# Array-Formatters Gem
 
 A simple gem to reformat an array of arrays into one of several formats:
 
@@ -7,6 +7,6 @@ A simple gem to reformat an array of arrays into one of several formats:
 - table (using fixed-width ASCII text)
 - YAML string
 
-== Author:
+## Author:
 Alan K. Stebbens <aks@stebbens.org>
 
