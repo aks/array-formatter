@@ -4,7 +4,7 @@ A simple gem to reformat an array of arrays into one of several formats:
 
 - HTML table (as a string)
 - CSV string
-- table (using fixed-width ASCII text)
+- table (using fixed-width ASCII text or Unicode drawing characters)
 - YAML string
 
 ## Installation
@@ -23,7 +23,19 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    require 'array/formatter'
+
+    array.to_table :ascii
+    array.to_table :unicode
+    array.to_table :unicode_double
+    array.to_table :unicode_single
+    array.to_table :unicode_mixed
+
+    array.to_csv
+
+    array.to_html
+
+    array.to_yaml
 
 ## Author:
 
