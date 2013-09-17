@@ -183,19 +183,23 @@ class Array
     # compute the maximum widths and the alignment of each column
     @widths = []
     @align = []
-    self.each do |row| 
-      row.each_with_index do |col,x|
-        @widths[x] ||= 0
+    self.each_with_index do |row,rx| 
+      row.each_with_index do |col,cx|
+        @widths[cx] ||= 0
         l = col.to_s.length 
-        @widths[x] = l if l > @widths[x]
-        type = case (col || '')
-               when /^\$?\s*\d[,\d]*\.\d*$/  then :rjust   # real number and/or currency
-               when /^\d[,\d]*$/             then :rjust   # integer
-               when /^$/, /^\s*-\s*$/        then nil       # empty values have no alignment
-               else :ljust
-               end
-        @align[x] ||= (col ? type : nil)
-        @align[x] = :ljust if type && @align[x] != type
+        @widths[cx] = l if l > @widths[cx]
+        if rx == 0
+          type = nil
+        else
+          type = case (col || '')
+                 when /^\$?\s*\d[,\d]*\.\d*$/  then :rjust   # real number and/or currency
+                 when /^\$?\s*\d[,\d]*$/       then :rjust   # integer
+                 when /^$/, /^\s*-\s*$/, nil   then nil       # empty values have no alignment
+                 else :ljust
+                 end
+        end
+        @align[cx] ||= (col ? type : nil)
+        @align[cx] = :ljust if type && @align[cx] != type && rx > 0
       end
     end
 
@@ -218,7 +222,7 @@ class Array
     c = @chars
     left, line, mid, right = case position
                              when :top     then [c[:tlb], c[:tb], c[:tib], c[:trb]]
-                             when :middle  then [c[:lib], c[:ib],  c[:ib], c[:rib]]
+                             when :middle  then [c[:lib], c[:ib], c[:mib], c[:rib]]
                              when :bottom  then [c[:blb], c[:bb], c[:bib], c[:brb]]
                              end
     s = @chars.wrap(left + @widths.map{|w| line * (w + 2)}.join(mid) + right) + "\n"

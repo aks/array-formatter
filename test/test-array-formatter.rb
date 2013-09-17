@@ -13,6 +13,16 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
           [ 'No Company',  'First3 Last3', 'Elsewhere ZZ', '763-34-1234', 'user3@sample.com' ]
         ]
 
+  @@a2 = [ %w( Region    State      Sales   ),
+           %w( Northwest WA       $2,100,500 ),
+           %w( Northwest OR         $900,800 ),
+           %w( Northeast NY       $8,120,000 ),
+           %w( Northeast MN         $489,500 ),
+           %w( Southeast GA       $2,111,200 ),
+           %w( Southeast FL       $9,388,000 ),
+           %w( Southwest AZ       $7,377,000 ) ]
+        
+
   def test_to_table_default
     s = @@a.to_table
     puts s
@@ -20,6 +30,14 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
 
   def test_to_table_unicode
     s = @@a.to_table(:unicode)
+    puts s
+  end
+
+  def test_to_table_alignments
+    s = @@a2.to_table
+    puts s
+    puts ''
+    s = @@a2.to_table(:unicode)
     puts s
   end
 
