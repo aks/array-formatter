@@ -43,7 +43,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
       puts "Created #{$refdir}" if $verbose
     end
     File.open(filename, 'w+') { |file| file.write out }
-    printf "%d lines written to $s\n", (out.count("\n")+1), filename
+    printf "%d lines written to %s\n", (out.count("\n")+1), filename
   end
 
   def check actual, name, kind
@@ -111,6 +111,22 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
   def test_b_table_unicode_mixed
     s = @@b.to_table(:unicode_mixed)
     check s, :b, :unicode_mixed
+  end
+
+  def test_a_to_csv
+    check @@a.to_csv, :a, :csv
+  end
+
+  def test_b_to_csv
+    check @@b.to_csv, :b, :csv
+  end
+
+  def test_a_to_html
+    check @@a.to_csv, :a, :html
+  end
+
+  def test_b_to_html
+    check @@b.to_html, :b, :html
   end
 
 end
