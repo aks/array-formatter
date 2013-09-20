@@ -154,7 +154,7 @@ class Array
   # :unicode_mixed - a table with double outer lines, and single inner lines
   TableChars.new :unicode_mixed,  [ "\u2554", "\u2550", "\u2564", "\u2557",     # tlb,  tb, tib, trb
                                     "\u2551", "\u2502", "\u2551",		# ldb, idb, rdb
-                                    "\u2557", "\u2550", "\u253C", "\u2562",     # lib,  ib, mib, rib
+                                    "\u255F", "\u2500", "\u253C", "\u2562",     # lib,  ib, mib, rib
                                     "\u255A", "\u2550", "\u2567", "\u255D" ]    # blb,  bb, bib, brb 
 
   TableChars.new :dos_single,	  [ "\xDA", "\xC4", "\xC2", "\xBF",	        # tlb,  tb, tib, trb
