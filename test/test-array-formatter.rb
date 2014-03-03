@@ -4,11 +4,11 @@ $LOAD_PATH.unshift '.', './test', './lib'
 
 $refdir = 'test/ref'               # where the test reference output lives
 
-# if 'save' anywhere as an argument, the outputs are saved as reference 
+# if 'save' anywhere as an argument, the outputs are saved as reference
 # test output.
 
 $verbose = $save = nil
-ARGV.each_with_index do |arg, x| 
+ARGV.each_with_index do |arg, x|
   case arg
   when 'save'
     $save = true
@@ -18,8 +18,8 @@ ARGV.each_with_index do |arg, x|
   end
 end
 
-require 'array/formatter'
-require 'test-helper'
+require 'helper'
+#require 'array/formatter'
 
 class Test_Array_Formatter < MiniTest::Unit::TestCase
 
@@ -39,7 +39,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
   def write_ref name, kind, out
     filename = ref_filename(name, kind)
     unless Dir.exist?($refdir)
-      Dir.mkdir $refdir 
+      Dir.mkdir $refdir
       puts "Created #{$refdir}" if $verbose
     end
     File.open(filename, 'w+') { |file| file.write out }
@@ -49,7 +49,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
   def check actual, name, kind
     if $verbose
       puts ""
-      puts actual 
+      puts actual
     end
     unless $save
       expected = read_ref(name, kind)
