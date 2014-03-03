@@ -19,14 +19,17 @@ Gem::Specification.new do |s|
     "README.md"
   ]
   s.files = [
+    ".document",
     ".gitignore",
     "Gemfile",
+    "Gemfile.lock",
     "LICENSE.txt",
     "README.md",
     "Rakefile",
     "array-formatter.gemspec",
     "lib/array/formatter.rb",
     "lib/array/formatter/version.rb",
+    "test/helper.rb",
     "test/ref/a-ascii.txt",
     "test/ref/a-csv.txt",
     "test/ref/a-html.txt",
@@ -44,34 +47,28 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.rubygems_version = "2.2.2"
   s.summary = "Format an array of arrays in one of serveral string formats"
-  s.test_files = ["test/ref/a-ascii.txt", "test/ref/a-csv.txt", "test/ref/a-html.txt", "test/ref/a-unicode.txt", "test/ref/a-unicode_single.txt", "test/ref/b-ascii.txt", "test/ref/b-csv.txt", "test/ref/b-html.txt", "test/ref/b-unicode.txt", "test/ref/b-unicode_double.txt", "test/ref/b-unicode_mixed.txt", "test/test-array-formatter.rb", "test/test-helper.rb"]
+  s.test_files = ["test/helper.rb", "test/ref/a-ascii.txt", "test/ref/a-csv.txt", "test/ref/a-html.txt", "test/ref/a-unicode.txt", "test/ref/a-unicode_single.txt", "test/ref/b-ascii.txt", "test/ref/b-csv.txt", "test/ref/b-html.txt", "test/ref/b-unicode.txt", "test/ref/b-unicode_double.txt", "test/ref/b-unicode_mixed.txt", "test/test-array-formatter.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<minitest>, [">= 5"])
+      s.add_development_dependency(%q<minitest>, ["~> 5.3"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 2.0.1"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, ["~> 2.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.3"])
       s.add_development_dependency(%q<rake>, [">= 0"])
     else
-      s.add_dependency(%q<minitest>, [">= 5"])
+      s.add_dependency(%q<minitest>, ["~> 5.3"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_dependency(%q<bundler>, ["~> 1.0"])
-      s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
-      s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<jeweler>, ["~> 2.0"])
       s.add_dependency(%q<bundler>, ["~> 1.3"])
       s.add_dependency(%q<rake>, [">= 0"])
     end
   else
-    s.add_dependency(%q<minitest>, [">= 5"])
+    s.add_dependency(%q<minitest>, ["~> 5.3"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
-    s.add_dependency(%q<bundler>, ["~> 1.0"])
-    s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
-    s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<jeweler>, ["~> 2.0"])
     s.add_dependency(%q<bundler>, ["~> 1.3"])
     s.add_dependency(%q<rake>, [">= 0"])
   end
