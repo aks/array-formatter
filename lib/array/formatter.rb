@@ -5,6 +5,7 @@
 # ARRAY.to_html  -- format an array of arrays into an HTML table string
 # ARRAY.to_csv   -- format an array of arrays into a CSV string
 # ARRAY.to_table -- format an array of arrays into an ASCII table string
+# ARRAY.to_yaml  -- format an array of arrays as a YAML string
 #
 
 class Array
@@ -53,7 +54,20 @@ class Array
   # characters.
 
   def to_csv
-    self.map {|row| row.map {|f| f =~ /[[:punct:]]/ ?  '"' + f.gsub(/"/, '""') + '"' : f }.join(",")}.join("\n")
+    self.map {|row|
+      row.map {|f|
+        f =~ /[[:punct:]]/ ?  '"' + f.gsub(/"/, '""') + '"' : f }.
+      join(",")}.
+    join("\n")
+  end
+
+  # string = ARRAY.to_yaml
+  #
+  # Convert an array of arrays to YAML (using built-in core methods)
+
+  def to_yaml
+    require 'yaml'
+    YAML.dump(self)
   end
 
   # string = ARRAY.to_table type
@@ -149,13 +163,13 @@ class Array
   TableChars.new :unicode_double, [ "\u2554", "\u2550", "\u2566", "\u2557",     # tlb,  tb, tib, trb
                                     "\u2551", "\u2551", "\u2551",		# ldb, idb, rdb
                                     "\u2560", "\u2550", "\u256C", "\u2563",     # lib,  ib, mib, rib
-                                    "\u255A", "\u2550", "\u2569", "\u255D" ]    # blb,  bb, bib, brb  			
+                                    "\u255A", "\u2550", "\u2569", "\u255D" ]    # blb,  bb, bib, brb
 
   # :unicode_mixed - a table with double outer lines, and single inner lines
   TableChars.new :unicode_mixed,  [ "\u2554", "\u2550", "\u2564", "\u2557",     # tlb,  tb, tib, trb
                                     "\u2551", "\u2502", "\u2551",		# ldb, idb, rdb
                                     "\u255F", "\u2500", "\u253C", "\u2562",     # lib,  ib, mib, rib
-                                    "\u255A", "\u2550", "\u2567", "\u255D" ]    # blb,  bb, bib, brb 
+                                    "\u255A", "\u2550", "\u2567", "\u255D" ]    # blb,  bb, bib, brb
 
   TableChars.new :dos_single,	  [ "\xDA", "\xC4", "\xC2", "\xBF",	        # tlb,  tb, tib, trb
                                     "\xB3", "\xB3", "\xB3",		        # ldb, idb, rdb
@@ -169,7 +183,7 @@ class Array
 
   TableChars.new :vt100,	  [ "\x6C", "\x71", "\x77", "\x6B",	        # tlb,  tb, tib, trb
                                     "\x78", "\x78", "\x78",		        # ldb, idb, rdb,
-                                    "\x74", "\x71", "\x6E", "\x75",	        # lib,  ib, mib, rib 
+                                    "\x74", "\x71", "\x6E", "\x75",	        # lib,  ib, mib, rib
                                     "\xCD", "\x71", "\x76", "\x6A" ],           # blb,  bb, bib, brb
                                   "\e(0", "\e(B"
 
@@ -183,10 +197,10 @@ class Array
     # compute the maximum widths and the alignment of each column
     @widths = []
     @align = []
-    self.each_with_index do |row,rx| 
+    self.each_with_index do |row,rx|
       row.each_with_index do |col,cx|
         @widths[cx] ||= 0
-        l = col.to_s.length 
+        l = col.to_s.length
         @widths[cx] = l if l > @widths[cx]
         if rx == 0
           type = nil
@@ -213,11 +227,11 @@ class Array
     s
   end
 
-  ## 
+  ##
   # table_line position
   #
   # generate a table line for position (:top, :middle, :bottom)
-  # 
+  #
   def table_line position
     c = @chars
     left, line, mid, right = case position

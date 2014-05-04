@@ -25,17 +25,22 @@ Or install it yourself as:
 
     require 'array/formatter'
 
-    array.to_table :ascii
-    array.to_table :unicode
-    array.to_table :unicode_double
-    array.to_table :unicode_single
-    array.to_table :unicode_mixed
-
+    array.to_table [CHARTYPE]
     array.to_csv
-
     array.to_html
-
     array.to_yaml
+
+With the `to_table` method, `CHARTYPE` is one of following, and defaults
+to `:ascii`:
+
+    :ascii
+    :unicode
+    :unicode_double
+    :unicode_single
+    :unicode_mixed
+
+See `test/ref/*` for example outputs.
+
 
 ## Author:
 

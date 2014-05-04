@@ -4,13 +4,13 @@ $LOAD_PATH.unshift '.', './test', './lib'
 
 $refdir = 'test/ref'               # where the test reference output lives
 
-# if 'save' anywhere as an argument, the outputs are saved as reference
-# test output.
+# if 'save' or '--save' appears anywhere as an argument, the outputs are saved
+# as reference test output.
 
 $verbose = $save = nil
 ARGV.each_with_index do |arg, x|
   case arg
-  when 'save'
+  when 'save', '--save'
     $save = true
     ARGV.delete_at(x)
   when '-v', '--verbose'
@@ -93,6 +93,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
     check s, :a, :unicode_single
   end
 
+
   def test_b_table_ascii
     s = @@b.to_table
     check s, :b, :ascii
@@ -122,11 +123,19 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
   end
 
   def test_a_to_html
-    check @@a.to_csv, :a, :html
+    check @@a.to_html, :a, :html
   end
 
   def test_b_to_html
     check @@b.to_html, :b, :html
+  end
+
+  def test_a_to_yaml
+    check @@a.to_yaml, :a, :yaml
+  end
+
+  def test_b_to_yaml
+    check @@b.to_yaml, :b, :yaml
   end
 
 end
