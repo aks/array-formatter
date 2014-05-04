@@ -2,10 +2,12 @@
 #
 # Author: Alan K. Stebbens <aks@stebbens.org>
 #
-# ARRAY.to_html  -- format an array of arrays into an HTML table string
-# ARRAY.to_csv   -- format an array of arrays into a CSV string
-# ARRAY.to_table -- format an array of arrays into an ASCII table string
-# ARRAY.to_yaml  -- format an array of arrays as a YAML string
+# ARRAY.to_html    -- format an array of arrays into an HTML table string
+# ARRAY.to_csv     -- format an array of arrays into a CSV string
+# ARRAY.to_table   -- format an array of arrays into an ASCII table string
+# ARRAY.to_yaml    -- format an array of arrays as a YAML string
+# ARRAY.to_columns -- format an array into vertically sorted columns
+# ARRAY.to_cols    -- an alias
 #
 
 class Array
@@ -68,6 +70,112 @@ class Array
   def to_yaml
     require 'yaml'
     YAML.dump(self)
+  end
+
+  # string = ARRAY.to_columns [OPTIONS ...]
+  # Format the array values into vertically sorted columns.
+  #
+  # The OPTIONS can override the reasonable defaults for
+  #
+  #  align: :left || :right || :just || :both
+  #  columns: NUM || :dynamic
+  #  indent: 1
+  #  separator: space
+  #  sort: true || false
+  #  width: ENV['COLUMNS'] || 80
+  #
+  # If :align is not specified, the default is :both -- which causes
+  # numbers to right-align, and non-numerics to left-align.
+
+  def to_columns opts={}
+    opts = {separator: '  ',                  # the column separator
+            columns: :dynamic,                # compute the number of columns dynamically
+            indent: 1,                        # indent each row by 1
+            width: ENV['COLUMNS'].to_i || 80, # default line width
+            align: :both,                     # use flexible alignment
+            lines: false,                     # include lines?
+            sort: :yes                        # sort the values by default
+           }.merge(opts)
+    sep_width = opts[:separator].length
+    max_value_width = self.map {|v| v.to_s.strip.length}.max
+    line_width = [opts[:width], max_value_width].max
+    indent_str = ' ' * opts[:indent]
+
+    # The number of columns time the max value width plus one less than the
+    # number of columns times the separator width must be less than or equal
+    # to the line width.
+    #
+    # NC = num cols
+    # VW = max value width
+    # SW = separator width
+    # LW = line width
+    #
+    # NC*VW + (NC-1)*SW   <= LW
+    # NC*VW + NC*SW - SW  <= LW
+    # NC*VW + NC*SW       <= LW + SW
+    # NC*(VW + SW)        <= LW + SW
+    # NC                  <= (LW + SW) / (VW + SW) >= 1
+
+    if [:dynamic, :dyn].member?(opts[:columns])
+      num_cols = [(line_width + sep_width) / (max_value_width + sep_width), 1].max
+    else
+      num_cols = opts[:columns]
+    end
+    num_rows = (self.size + num_cols) / num_cols
+    row = 0
+    out = ''
+    values = opts[:sort] ? self.sort : self
+    prefix = ' ' * opts[:indent]
+    suffix = "\n"
+    if opts[:lines]
+      cell_line = '-' * max_value_width
+      sep_line  = '+'.center(sep_width,'-')
+      prefix += "| "
+      suffix = " |\n"
+      topline = indent_str + '+-' + (cell_line + sep_line) * (num_cols-1) + cell_line + '-+' + "\n"
+      midline = indent_str + '|-' + (cell_line + sep_line) * (num_cols-1) + cell_line + '-|' + "\n"
+      lines = topline
+    else
+      midline = nil
+      topline = nil
+      lines = nil
+    end
+    while row < num_rows
+      data = []
+      x = row
+      out += lines unless lines.nil?
+      while x < num_rows * num_cols
+        if x < values.length
+          val = values[x].to_s.strip
+          align = opts[:align]
+          if align == :both
+            begin
+              Float(val) || Integer(val)
+              align = :right
+            rescue ArgumentError
+              align = :left
+            end
+          end
+          val = case align
+                when :left  then val.ljust(max_value_width)
+                when :right then val.rjust(max_value_width)
+                when :just  then val.center(max_value_width)
+                end
+        else
+          val = ''.ljust(max_value_width)
+        end
+        data << val
+        x += num_rows
+        lines = midline
+      end
+      #line = (' ' * opts[:indent].to_i) + data.join(opts[:separator]) + "\n"
+      line = prefix + data.join(opts[:separator]) + suffix
+      out += line
+      lines = midline unless midline.nil?
+      row += 1
+    end
+    out += topline unless topline.nil?
+    out
   end
 
   # string = ARRAY.to_table type
