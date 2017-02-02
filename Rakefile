@@ -18,7 +18,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://guides.rubygems.org/specification-reference/ for more options
   gem.name        = "array-formatter"
-  gem.homepage    = "https://bitbucket.org/aks_/array-formatter"
+  gem.homepage    = "https://github.com/aks/array-formatter"
   gem.license     = "MIT"
   gem.version     = Array::Formatter::VERSION
   gem.summary     = %Q{Format an array of arrays in one of serveral string formats}

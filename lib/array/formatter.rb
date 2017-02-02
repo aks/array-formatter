@@ -5,8 +5,11 @@
 # ARRAY.to_html  -- format an array of arrays into an HTML table string
 # ARRAY.to_csv   -- format an array of arrays into a CSV string
 # ARRAY.to_table -- format an array of arrays into an ASCII table string
-# ARRAY.to_yaml  -- format an array of arrays as a YAML string
+# ARRAY.to_yml   -- format an array of arrays as a YAML string
 #
+
+autoload :YAML, 'yaml'
+autoload :CGI,  'cgi'
 
 class Array
 
@@ -16,18 +19,16 @@ class Array
   # HTML table.  If indent given, indent the <table> by that
   # many spaces.
 
-  def to_html indent=0
-    require 'cgi'
-    s = self.wrap_map_html_data("table", indent + 0) do |row,   rx|
-         row.wrap_map_html_data("tr",    indent + 1) do |field, fx|
-           tag = rx == 0 ? 'th' : 'td'
-           (' ' *                       (indent + 2)) +   # indention
-           "<#{tag}>"                                 +   # open tag
-           (field && CGI.escapeHTML(field) || '')     +   # cell text
-           "</#{tag}>\n"                                  # close tag
-         end
-    end
-    s
+  def to_html(indent=0)
+    wrap_map_html_data("table", indent + 0) do |row,   rx|
+      row.wrap_map_html_data("tr",    indent + 1) do |field, fx|
+        tag = rx == 0 ? 'th' : 'td'
+        (' ' *                       (indent + 2)) +   # indention
+        "<#{tag}>"                                 +   # open tag
+        (field && CGI.escapeHTML(field) || '')     +   # cell text
+        "</#{tag}>\n"                                  # close tag
+      end
+   end
   end
 
   # string = ARRAY.wrap_map_html_data TAG, INDENT {|DATA, INDEX| block}
@@ -36,11 +37,11 @@ class Array
   # <TAG> and ending with </TAG>, and invoking the block on each array item,
   # passing the DATA item with its INDEX.
 
-  def wrap_map_html_data tag, indent=0
+  def wrap_map_html_data(tag, indent=0)
     s = ''
     prefix = ' ' * indent
     s << prefix + "<#{tag}>\n"
-    self.each_with_index {|data, x| s << ((yield data, x) || '') }
+    each_with_index {|data, x| s << ((yield data, x) || '') }
     s << prefix + "</#{tag}>\n"
     s
   end
@@ -54,19 +55,18 @@ class Array
   # characters.
 
   def to_csv
-    self.map {|row|
+    map {|row|
       row.map {|f|
         f =~ /[[:punct:]]/ ?  '"' + f.gsub(/"/, '""') + '"' : f }.
       join(",")}.
     join("\n")
   end
 
-  # string = ARRAY.to_yaml
+  # string = ARRAY.to_yml
   #
   # Convert an array of arrays to YAML (using built-in core methods)
 
-  def to_yaml
-    require 'yaml'
+  def to_yml
     YAML.dump(self)
   end
 
@@ -109,7 +109,7 @@ class Array
     @@table_chars = {}
     @@table_char_names = %w( tlb tb tib trb ldb idb rdb lib ib mib rib blb bb bib brb ).map{|n|n.intern}
 
-    def initialize name, fmt_chars, start=nil, stop=nil
+    def initialize(name, fmt_chars, start=nil, stop=nil)
       @chars = self
       @@table_chars[name] = @chars
       if fmt_chars.class == Symbol
@@ -131,13 +131,13 @@ class Array
     #
     # Return the TableChars object for NAME, or nil
 
-    def self.get name
+    def self.get(name)
       @chars = @@table_chars[name]
     end
 
     attr_reader :start, :stop
 
-    def wrap text
+    def wrap(text)
       (@start || '') + text + (@stop || '')
     end
 
@@ -190,14 +190,13 @@ class Array
   TableChars.new :unicode, :unicode_single
   TableChars.new :dos,     :dos_single
 
-
-  def to_table name=:ascii
+  def to_table(name=:ascii)
     @chars = TableChars.get name
 
     # compute the maximum widths and the alignment of each column
     @widths = []
     @align = []
-    self.each_with_index do |row,rx|
+    each_with_index do |row,rx|
       row.each_with_index do |col,cx|
         @widths[cx] ||= 0
         l = col.to_s.length
@@ -219,7 +218,7 @@ class Array
 
     # now format each row
     s = ''
-    self.each_with_index do |row, rx|
+    each_with_index do |row, rx|
       s << table_line(rx == 0 ? :top : :middle)
       s << table_data(row)
     end
@@ -232,7 +231,7 @@ class Array
   #
   # generate a table line for position (:top, :middle, :bottom)
   #
-  def table_line position
+  def table_line(position)
     c = @chars
     left, line, mid, right = case position
                              when :top     then [c[:tlb], c[:tb], c[:tib], c[:trb]]
@@ -248,7 +247,7 @@ class Array
   #
   # generate a data row as part of a table
 
-  def table_data data
+  def table_data(data)
     left, middle, right = [@chars[:ldb], @chars[:idb], @chars[:rdb]]
     a = []
     data.each_with_index do |item, x|

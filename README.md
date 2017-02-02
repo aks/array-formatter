@@ -28,7 +28,9 @@ Or install it yourself as:
     array.to_table [CHARTYPE]
     array.to_csv
     array.to_html
-    array.to_yaml
+    array.to_yml
+
+> Note: the `YAML` standard Ruby class defines a `to_yaml` method on arrays.
 
 With the `to_table` method, `CHARTYPE` is one of following, and defaults
 to `:ascii`:

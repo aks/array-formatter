@@ -19,15 +19,15 @@ ARGV.each_with_index do |arg, x|
 end
 
 require 'helper'
-#require 'array/formatter'
+require 'array/formatter'
 
-class Test_Array_Formatter < MiniTest::Unit::TestCase
+class Test_Array_Formatter < MiniTest::Test
 
-  def ref_filename name, kind
+  def ref_filename(name, kind)
     "#{$refdir}/#{name}-#{kind}.txt"
   end
 
-  def read_ref name, kind
+  def read_ref(name, kind)
     filename = ref_filename(name, kind)
     ref = nil
     if File.exist?(filename)
@@ -36,7 +36,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
     ref
   end
 
-  def write_ref name, kind, out
+  def write_ref(name, kind, out)
     filename = ref_filename(name, kind)
     unless Dir.exist?($refdir)
       Dir.mkdir $refdir
@@ -46,7 +46,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
     printf "%d lines written to %s\n", (out.count("\n")+1), filename
   end
 
-  def check actual, name, kind
+  def check(actual, name, kind)
     if $verbose
       puts ""
       puts actual
@@ -56,7 +56,7 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
       if expected
         assert_equal actual.strip, expected.strip, "Error: at #{caller.first}:"
       else
-        puts "No reference output to compare with"
+        puts "No reference output to compare with (at #{caller.first})"
       end
     else
       write_ref name, kind, actual
@@ -92,7 +92,6 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
     s = @@a.to_table(:unicode_single)
     check s, :a, :unicode_single
   end
-
 
   def test_b_table_ascii
     s = @@b.to_table
@@ -130,12 +129,12 @@ class Test_Array_Formatter < MiniTest::Unit::TestCase
     check @@b.to_html, :b, :html
   end
 
-  def test_a_to_yaml
-    check @@a.to_yaml, :a, :yaml
+  def test_a_to_yml
+    check @@a.to_yml, :a, :yml
   end
 
-  def test_b_to_yaml
-    check @@b.to_yaml, :b, :yaml
+  def test_b_to_yml
+    check @@b.to_yml, :b, :yml
   end
 
 end
